@@ -1,4 +1,5 @@
 package Service;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,19 @@ public class ServiceCentro {
 	 * Carica tutti i centri dal repository e li memorizza nella lista interna del servizio.
 	 */
 	public void caricaCentri () {
-		this.centri = repositorycentro.findAll();
+		try {
+			this.centri = repositorycentro.findAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public CentroDiMonitoraggio creaCentro(CentroDiMonitoraggio cm) {
+		try {
+			repositorycentro.save(cm);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cm;
 	}
 	/**
 	 * Restituisce il centro di monitoraggio corrispondente all'ID specificato.
@@ -70,10 +83,10 @@ public class ServiceCentro {
 	 * @param so Il service dell'operatore
 	 * @param sc Il service delle coordinate
 	 */
-public void enrichCentri (ServiceOperatore so, ServiceCoordinate sc) {
-	this.serviceoperatore = so;
-	this.servicecoordinate = sc;  
-	this.centri.stream().forEach(cm -> this.centroMapper(cm));
-	
-}
+	public void enrichCentri (ServiceOperatore so, ServiceCoordinate sc) {
+		this.serviceoperatore = so;
+		this.servicecoordinate = sc;  
+		this.centri.stream().forEach(cm -> this.centroMapper(cm));
+		
+	}
 }

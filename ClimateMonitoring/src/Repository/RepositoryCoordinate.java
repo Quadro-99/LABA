@@ -56,7 +56,7 @@ public class RepositoryCoordinate implements RepositoryInterface<CoordinateMonit
 	public CoordinateMonitoraggio save(CoordinateMonitoraggio co) {
 		String query = "Insert into coordinatedimonitoraggio (idcentro,geoname,nomearea,stato,latitudine,longitudine) Values (";
 		query += co.getIdcentro() + "," + co.getGeoname() + "," + co.getNomeArea() + "," + co.getStato() + "," + co.getLatitudine();
-		query += co.getLongitudine();
+		query += co.getLongitudine() + "," + co.getIdoperatore();
 		DBO.executeQuery(query);
 		return co;
 	}
@@ -69,7 +69,7 @@ public class RepositoryCoordinate implements RepositoryInterface<CoordinateMonit
 	 * @return le coordinate di monitoraggio appena aggiornate 
 	 */
 	public CoordinateMonitoraggio update(CoordinateMonitoraggio co) {
-	    String query = "Update coordinatemonitoraggio Set idcentro=" + co.getIdcentro() + ",nomearea=" + co.getNomeArea() + ";stato =" + co.getStato();
+	    String query = "Update coordinatemonitoraggio Set idoperatore = " + co.getIdoperatore() + ", idcentro=" + co.getIdcentro() + ",nomearea=" + co.getNomeArea() + ";stato =" + co.getStato();
 	    query +=  ",latitudine= " + co.getLatitudine() + ",longitudine= " + co.getLongitudine() + "where geoname=" + co.getGeoname() + ";";
 	    DBO.executeQuery(query);
 	    return co;
@@ -100,6 +100,7 @@ public class RepositoryCoordinate implements RepositoryInterface<CoordinateMonit
 		co.setStato(result.getString("stato"));
 		co.setLatitudine(result.getDouble("Latitudine"));
 		co.setLongitudine(result.getDouble("Longitudine"));
+		co.setIdoperatore(result.getInt("idoperatore"));
 		return co;
 	} 
 }

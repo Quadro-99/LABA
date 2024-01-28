@@ -14,13 +14,13 @@ public interface RepositoryInterface<T> {
 	 * Recupera gli oggetti di tipo<T> dal database
 	 * @return una lista contenente tutti gli oggetti di tipo<T> 
 	 */
-	public List<T> findAll();
+	public List<T> findAll() throws SQLException;
 	/**
 	 * Salva un nuovo oggetto <T> nel Database 
 	 * @param t L'oggetto da salvare
 	 * @return l'oggetto <T> appena salvato
 	 */
-	public T save (T t);
+	public T save (T t) throws SQLException;
 	/**
  	 * Aggiorna un oggetto T esistente nel database.
      * @param t l'oggetto da aggiornare
@@ -32,6 +32,6 @@ public interface RepositoryInterface<T> {
 	 * Elimina un oggetto <T> dal Database
 	 * @param t l'oggetto da eliminare
 	 */
-	public void delete(T t);
+	public void delete(T t) throws SQLException;
 	
 }

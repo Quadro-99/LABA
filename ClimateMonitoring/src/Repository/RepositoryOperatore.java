@@ -3,6 +3,7 @@ package Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import Model.Operatore; 
@@ -42,6 +43,13 @@ public class RepositoryOperatore implements RepositoryInterface<Operatore> {
 		}
 		return operatori;
 	}
+	
+	public Operatore findOperatore(Operatore o) throws SQLException {
+		String query = "Select * From operatore WHERE email =" + o.getEmail() + ",passwordutente =" +o.getPassword() + ";";
+		ResultSet results = DBO.executeQuery(query);
+		if (!results.isBeforeFirst()) return null;
+		return createOperatore(results);
+	}
 
 	@Override
 	/**
@@ -49,12 +57,12 @@ public class RepositoryOperatore implements RepositoryInterface<Operatore> {
 	 * @param o l'operatore da salvare 
 	 * @return l'operatore appena salvato
 	 */
-	public Operatore save(Operatore o) {
+	public Operatore save(Operatore o) throws SQLException {
 		String query = "Insert into operatore (nome,cognome,cf,email,passwordutente,idcentro) Values (";
 		query += o.getNome() + "," + o.getCognome() + "," + o.getCf() + "," + o.getEmail() + "," + o.getPassword();
 		query += "," + o.getIDCentro() + ");"; 
 		DBO.executeQuery(query);
-		return o;
+		return findOperatore(o);
 	}
 
 	@Override
@@ -64,7 +72,7 @@ public class RepositoryOperatore implements RepositoryInterface<Operatore> {
 	 * @return l'operatore appena aggiornato 
 	 */
 	public Operatore update(Operatore o) {
-	    String query = "Update operatore Set nome =" + o.getNome() + ",cognome =" + o.getCognome() + ",cf =" + o.getCf() + ",email =" + o.getEmail() +",password =" +o.getPassword();
+	    String query = "Update operatore Set nome =" + o.getNome() + ",cognome =" + o.getCognome() + ",cf =" + o.getCf() + ",email =" + o.getEmail() +",passwordutente =" +o.getPassword();
 	    query += ",idcentro =" + o.getIDCentro() +"WHERE idoperatore=" + o.getIdoperatore() + ";"; 
 	   DBO.executeQuery(query);
 	    return o;

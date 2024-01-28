@@ -1,4 +1,5 @@
 package Service;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class ServiceOperatore {
 	/**
 	 * Repository per l'accesso ai dati degli operatori 
 	 */
-	private RepositoryInterface<Operatore> repositoryoperatori = new RepositoryOperatore();
+	private RepositoryOperatore repositoryoperatori = new RepositoryOperatore();
 	/**
 	 * Costruttore della classe ServiceOperatore 
 	 */
@@ -45,43 +46,66 @@ public class ServiceOperatore {
 	/**
 	 * Carica gli operatori dal Repository e li memorizza nella lista operatori
 	 */
-public void caricaOperatori () {
-	this.operatori = repositoryoperatori.findAll();
-}
-/**
- * Restituisce l'operatore con l'ID specificato
- * @param idoperatore
- * @return L'operatore con l'id specificato, o null se non trovato
- */
-public Operatore getOperatorebyId (Integer idoperatore) {
-	if(idoperatore == null) return null;
-	return operatori.stream().filter(c -> c.getIdoperatore() == idoperatore).findFirst().orElse(new Operatore());
-} 
-/**
- * Restituisce la lista di operatori associati a un determinato centro di monitoraggio
- * @param cm Centro di monitoraggio per il quale ottenere gli operatori
- * @return Lista degli operatori associati al centro di monitoraggio
- */
-public List<Operatore> getOperatoriListByCentro (CentroDiMonitoraggio cm){
-	return operatori.stream().filter(o -> o.getIDCentro() == cm.getIdcentro()).collect(Collectors.toList());
-}
-/**
- * Metodo utilizzato per mappare informazioni aggiuntive degli operatori come i parametri climatici e il centro di monitoraggio associato.
- * @param o Operatore da mappare
- */
-	private void operatoreMapper (Operatore o) {
-	o.setParametriclimatici(this.serviceparametri.getParametriListByOperatore(o.getIdoperatore()));
-	o.setCentrodimonitoraggio(this.servicecentro.getCentroById(o.getIDCentro()));
+	public void caricaOperatori () {
+		this.operatori = repositoryoperatori.findAll();
+	}
+	public Operatore creaOperatore(Operatore o) {
+		try {
+			return repositoryoperatori.save(o);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Operatore login(String username, String password) {
+		Operatore o = new Operatore();
+		o.setEmail(username);
+		o.setPassword(password);
+		try {
+			return repositoryoperatori.findOperatore(o);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	/**
-	 * Arricchisce gli operatori con informazioni sui parametri climatici e il centro di monitoraggio associato.
-	 * @param sc Service del Centro 
-	 * @param sp Service dei Parametri climatici
+	 * Restituisce l'operatore con l'ID specificato
+	 * @param idoperatore
+	 * @return L'operatore con l'id specificato, o null se non trovato
 	 */
-public void enrichOperatori (ServiceCentro sc, ServiceParametri sp) {
-	this.servicecentro = sc;
-	this.serviceparametri = sp;
-	this.operatori.stream().forEach(o -> this.operatoreMapper(o));
-	
-}
+	public Operatore getOperatorebyId (Integer idoperatore) {
+		if(idoperatore == null) return null;
+		return operatori.stream().filter(c -> c.getIdoperatore() == idoperatore).findFirst().orElse(new Operatore());
+	} 
+	/**
+	 * Restituisce la lista di operatori associati a un determinato centro di monitoraggio
+	 * @param cm Centro di monitoraggio per il quale ottenere gli operatori
+	 * @return Lista degli operatori associati al centro di monitoraggio
+	 */
+	public List<Operatore> getOperatoriListByCentro (CentroDiMonitoraggio cm){
+		return operatori.stream().filter(o -> o.getIDCentro() == cm.getIdcentro()).collect(Collectors.toList());
+	}
+	public void associaCentro(Operatore o, CentroDiMonitoraggio cm) {
+		o.setIDCentro(cm.getIdcentro());
+		repositoryoperatori.update(o);
+	}
+	/**
+	 * Metodo utilizzato per mappare informazioni aggiuntive degli operatori come i parametri climatici e il centro di monitoraggio associato.
+	 * @param o Operatore da mappare
+	 */
+		private void operatoreMapper (Operatore o) {
+		o.setParametriclimatici(this.serviceparametri.getParametriListByOperatore(o.getIdoperatore()));
+		o.setCentrodimonitoraggio(this.servicecentro.getCentroById(o.getIDCentro()));
+		}
+		/**
+		 * Arricchisce gli operatori con informazioni sui parametri climatici e il centro di monitoraggio associato.
+		 * @param sc Service del Centro 
+		 * @param sp Service dei Parametri climatici
+		 */
+	public void enrichOperatori (ServiceCentro sc, ServiceParametri sp) {
+		this.servicecentro = sc;
+		this.serviceparametri = sp;
+		this.operatori.stream().forEach(o -> this.operatoreMapper(o));
+		
+	}
 }

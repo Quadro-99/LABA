@@ -1,4 +1,5 @@
 package Service;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,12 +40,25 @@ public class ServiceParametri {
 	 * Costruttore della classe ServiceParametri
 	 */
 	public ServiceParametri() {
+		this.caricaParametri();
 	}
 	/**
 	 * Carica tutti i parametri climatici dal repository
 	 */
-	 public void CaricaParametri() {
-		 this.parametri = repositoryparametri.findAll();
+	 public void caricaParametri() {
+		 try {
+			this.parametri = repositoryparametri.findAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	 }
+	 public ParametriClimatici creaParametri(ParametriClimatici pc) {
+		 try {
+			 repositoryparametri.save(pc);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return pc;
 	 }
 	 /**
 	  * Restituisce un parametro climatico in base all'id specificato
@@ -76,9 +90,9 @@ public class ServiceParametri {
 	 * @param so Service dell'operatore
 	 * @param sc Service delle coordinate
 	 */
-public void enrichParametri (ServiceOperatore so, ServiceCoordinate sc) {
-	this.servicecoordinate = sc;
-	this.serviceoperatore = so; 
-	this.parametri.forEach(p -> this.parametriMapper(p));
-}
+	public void enrichParametri (ServiceOperatore so, ServiceCoordinate sc) {
+		this.servicecoordinate = sc;
+		this.serviceoperatore = so; 
+		this.parametri.forEach(p -> this.parametriMapper(p));
+	}
 }

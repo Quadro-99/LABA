@@ -153,7 +153,7 @@ public void setPassword(String password) {
  * Restituisce l'Id del centro associato all'operatore.
  * @return L'ID del centro
  */
-public int getIDCentro() {
+public Integer getIDCentro() {
 	return idcentro;
 }
 /**

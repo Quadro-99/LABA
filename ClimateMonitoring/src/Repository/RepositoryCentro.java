@@ -3,6 +3,7 @@ package Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 	import Model.CentroDiMonitoraggio; 
@@ -47,6 +48,23 @@ import java.util.List;
 			}
 			return centri;
 		}
+		
+		private CentroDiMonitoraggio findLastInsert(CentroDiMonitoraggio c) {
+			List<CentroDiMonitoraggio> centri = new ArrayList<>();
+			String query = "Select * From centromonitoraggio where indirizzo = " + c.getIndirizzo() + " AND centroname = " + c.getCentroname() + ";";
+			ResultSet results = DBO.executeQuery(query);
+			if(results != null) {
+				if(centri.size() > 0) centri.clear();
+				try {
+					while(results.next()) {
+						centri.add(createCentro(results));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return centri.stream().max(Comparator.comparing(CentroDiMonitoraggio::getIdcentro)).orElse(new CentroDiMonitoraggio());
+		}
 /**
  * Salva un nuovo centro di monitoraggio nel database attraverso una query SQL
  * 
@@ -57,8 +75,9 @@ import java.util.List;
 		public CentroDiMonitoraggio save(CentroDiMonitoraggio c) {
 			String query = "Insert into centromonitoraggio (indirizzo,centroname) Values (";
 			query += c.getIndirizzo() + "," + c.getCentroname();
+			query += ");";
 			DBO.executeQuery(query);
-			return c;
+			return findLastInsert(c);
 		}
 /**
  * Aggiorna il centro di monitoraggio attraverso una query SQL

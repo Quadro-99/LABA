@@ -2,6 +2,7 @@ package Service;
 import Repository.RepositoryGuest;
 import Repository.RepositoryInterface;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,11 @@ private RepositoryInterface<Guest> repositoryguest = new RepositoryGuest();
 	 * Carica tutti i guest dal repository e li memorizza nella lista interna al servizio
 	 */
  public void CaricaGuest() {
-	 this.guest = repositoryguest.findAll();
+	 try {
+		this.guest = repositoryguest.findAll();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
  }
  /**
   * Restituisce il guest corrispondente all'id specificato

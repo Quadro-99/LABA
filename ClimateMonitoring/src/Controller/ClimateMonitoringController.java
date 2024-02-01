@@ -84,7 +84,7 @@ public class ClimateMonitoringController {
 	public Operatore login(String us, String pwd) {
 		//return serviceoperatore.login(us, pwd);
 		Operatore o = new Operatore();
-		o.setIDCentro(-1);
+		o.setIDCentro(0);
 		o.setIdoperatore(0);
 		return o;
 	}

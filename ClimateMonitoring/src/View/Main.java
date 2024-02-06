@@ -16,6 +16,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+
 import Controller.ClimateMonitoringController;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.DimensionUIResource;
@@ -42,11 +44,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.Cursor;
 
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JSeparator;
+import javax.swing.JComboBox;
 
 public class Main {
 
@@ -74,6 +81,9 @@ public class Main {
 	private CoordinateMonitoraggio selectedCoordinate;
 	private Operatore currentOperator;
     private ClimateMonitoringController controller = new ClimateMonitoringController();
+    private JComboBox coordinateComboBox;
+
+
     
 	/**
 	 * Launch the application.
@@ -146,6 +156,12 @@ public class Main {
 		insertNewCentro.getContentPane().add(chiudi);
 		
 		JButton registraCentro = new JButton("CHIUDI");
+		registraCentro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changeFrameTo(insertNewCentro, operatorFrame);
+			}
+		});
 		registraCentro.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		registraCentro.setBounds(100, 275, 175, 45);
 		insertNewCentro.getContentPane().add(registraCentro);
@@ -219,6 +235,12 @@ public class Main {
 		longArea.setColumns(10);
 		
 		JButton btnNewButton_4 = new JButton("CHIUDI");
+		btnNewButton_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changeFrameTo(insertNewCoordinate, operatorFrame);
+			}
+		});
 		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton_4.setBounds(184, 464, 270, 60);
 		insertNewCoordinate.getContentPane().add(btnNewButton_4);
@@ -276,6 +298,12 @@ public class Main {
 		insertParametri.getContentPane().add(lblNewLabel_5);
 		
 		JButton btnNewButton_6 = new JButton("Chiudi");
+		btnNewButton_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changeFrameTo(insertParametri, operatorFrame);
+			}
+		});
 		btnNewButton_6.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnNewButton_6.setBounds(200, 600, 235, 45);
 		insertParametri.getContentPane().add(btnNewButton_6);
@@ -290,98 +318,98 @@ public class Main {
 		insertParametri.getContentPane().add(btnNewButton_7);
 		
 		JTextField precipitazioniParam = new JTextField();
-		precipitazioniParam.setBounds(680, 240, 65, 50);
+		precipitazioniParam.setBounds(680, 280, 65, 50);
 		insertParametri.getContentPane().add(precipitazioniParam);
 		precipitazioniParam.setColumns(10);
 		
 		JTextField pressioneParam = new JTextField();
-		pressioneParam.setBounds(250, 360, 65, 50);
+		pressioneParam.setBounds(250, 400, 65, 50);
 		insertParametri.getContentPane().add(pressioneParam);
 		pressioneParam.setColumns(10);
 		
 		JTextField massaGhiacciaiParam = new JTextField();
-		massaGhiacciaiParam.setBounds(680, 360, 65, 50);
+		massaGhiacciaiParam.setBounds(680, 400, 65, 50);
 		insertParametri.getContentPane().add(massaGhiacciaiParam);
 		massaGhiacciaiParam.setColumns(10);
 		
 		JTextField umiditaParam = new JTextField();
-		umiditaParam.setBounds(250, 300, 65, 50);
+		umiditaParam.setBounds(250, 340, 65, 50);
 		insertParametri.getContentPane().add(umiditaParam);
 		umiditaParam.setColumns(10);
 		
 		JTextField ventoParam = new JTextField();
-		ventoParam.setBounds(250, 240, 65, 50);
+		ventoParam.setBounds(250, 280, 65, 50);
 		insertParametri.getContentPane().add(ventoParam);
 		ventoParam.setColumns(10);
 		
 		JTextField noteParam = new JTextField();
 		noteParam.setHorizontalAlignment(SwingConstants.CENTER);
 		noteParam.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		noteParam.setBounds(680, 427, 246, 110);
+		noteParam.setBounds(680, 460, 246, 88);
 		insertParametri.getContentPane().add(noteParam);
 		noteParam.setColumns(10);
 		
 		JTextField altitudeGhiacciaiParam = new JTextField();
-		altitudeGhiacciaiParam.setBounds(680, 300, 65, 50);
+		altitudeGhiacciaiParam.setBounds(680, 340, 65, 50);
 		insertParametri.getContentPane().add(altitudeGhiacciaiParam);
 		altitudeGhiacciaiParam.setColumns(10);
 		
 		JTextField dataParam = new JTextField();
-		dataParam.setBounds(466, 130, 358, 34);
+		dataParam.setBounds(466, 110, 358, 34);
 		insertParametri.getContentPane().add(dataParam);
 		dataParam.setColumns(10);
 		
 		JTextField temperaturaParam = new JTextField();
 		temperaturaParam.setFont(new Font("Tahoma", Font.PLAIN, 25));
-		temperaturaParam.setBounds(250, 420, 65, 50);
+		temperaturaParam.setBounds(250, 460, 65, 50);
 		insertParametri.getContentPane().add(temperaturaParam);
 		temperaturaParam.setColumns(10);
 		
 		JLabel lblNewLabel_11 = new JLabel("Data di rilevazione (Formato YYYY-MM-DD)");
 		lblNewLabel_11.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel_11.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel_11.setBounds(130, 130, 320, 35);
+		lblNewLabel_11.setBounds(130, 110, 320, 35);
 		insertParametri.getContentPane().add(lblNewLabel_11);
 		
 		JLabel lblNewLabel_12 = new JLabel("- VENTO ");
 		lblNewLabel_12.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNewLabel_12.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_12.setBounds(50, 240, 200, 50);
+		lblNewLabel_12.setBounds(50, 280, 200, 50);
 		insertParametri.getContentPane().add(lblNewLabel_12);
 		
 		JLabel lblNewLabel_13 = new JLabel("- TEMPERATURA");
 		lblNewLabel_13.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_13.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_13.setBounds(50, 420, 200, 50);
+		lblNewLabel_13.setBounds(50, 460, 200, 50);
 		insertParametri.getContentPane().add(lblNewLabel_13);
 		
 		JLabel lblNewLabel_14 = new JLabel("- PRESSIONE");
 		lblNewLabel_14.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_14.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_14.setBounds(50, 360, 200, 50);
+		lblNewLabel_14.setBounds(50, 400, 200, 50);
 		insertParametri.getContentPane().add(lblNewLabel_14);
 		
 		JLabel lblNewLabel_15 = new JLabel("- UMIDITA'");
 		lblNewLabel_15.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNewLabel_15.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_15.setBounds(50, 300, 200, 50);
+		lblNewLabel_15.setBounds(50, 340, 200, 50);
 		insertParametri.getContentPane().add(lblNewLabel_15);
 		
 		JLabel lblNewLabel_16 = new JLabel("- NOTE (Max 256 caratteri)");
 		lblNewLabel_16.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNewLabel_16.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_16.setBounds(375, 420, 260, 50);
+		lblNewLabel_16.setBounds(375, 460, 260, 50);
 		insertParametri.getContentPane().add(lblNewLabel_16);
 		
 		JLabel lblNewLabel_17 = new JLabel("- MASSA GHIACCIAI");
 		lblNewLabel_17.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_17.setBounds(375, 360, 260, 50);
+		lblNewLabel_17.setBounds(375, 400, 260, 50);
 		insertParametri.getContentPane().add(lblNewLabel_17);
 		
 		JLabel lblNewLabel_18 = new JLabel("- ALTITUDINE GHIACCIAI");
 		lblNewLabel_18.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_18.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_18.setBounds(375, 300, 260, 50);
+		lblNewLabel_18.setBounds(375, 340, 260, 50);
 		insertParametri.getContentPane().add(lblNewLabel_18);
 		
 		JLabel lblNewLabel_19 = new JLabel("New label");
@@ -391,18 +419,28 @@ public class Main {
 		JLabel lblNewLabel_20 = new JLabel("- PRECIPITAZIONI");
 		lblNewLabel_20.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNewLabel_20.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_20.setBounds(375, 240, 200, 50);
+		lblNewLabel_20.setBounds(375, 280, 200, 50);
 		insertParametri.getContentPane().add(lblNewLabel_20);
 		
 		JLabel lblNewLabel_21 = new JLabel("Inserisci valore (1-5)");
 		lblNewLabel_21.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_21.setBounds(225, 200, 223, 26);
+		lblNewLabel_21.setBounds(225, 240, 223, 26);
 		insertParametri.getContentPane().add(lblNewLabel_21);
 		
 		JLabel lblNewLabel_22 = new JLabel("Inserisci valore (1-5)");
 		lblNewLabel_22.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_22.setBounds(644, 200, 223, 26);
+		lblNewLabel_22.setBounds(644, 240, 223, 26);
 		insertParametri.getContentPane().add(lblNewLabel_22);
+		
+		JComboBox coordinateComboBox = new JComboBox();
+		coordinateComboBox.setBounds(466, 180, 358, 34);
+		insertNewParametri.getContentPane().add(coordinateComboBox);
+		
+		JLabel lblNewLabel_4 = new JLabel("Seleziona coordinate geografiche");
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_4.setBounds(130, 180, 320, 35);
+		insertNewParametri.getContentPane().add(lblNewLabel_4);
 		
 		insertParametri.addWindowListener(new java.awt.event.WindowAdapter() {
 	        @Override
@@ -694,6 +732,28 @@ public class Main {
 				}
 			});
 			
+			cl.addListSelectionListener(new ListSelectionListener() {
+			   
+				@Override
+			    public void valueChanged(ListSelectionEvent e) {
+			        if (!e.getValueIsAdjusting()) {
+			            CentroDiMonitoraggio selectedCentro = cl.getSelectedValue();
+			            if (selectedCentro != null) {
+			                
+			                List<CoordinateMonitoraggio> coordinate = controller.getCoordinateStub(selectedCentro.getIdcentro());
+
+			               
+			                coordinateComboBox.removeAllItems();
+
+			           
+			                for (CoordinateMonitoraggio coord : coordinate) {
+			                    coordinateComboBox.addItem(coord);
+			                }
+			            }
+			        }
+			    }
+			});
+
 			cl.addMouseListener(new MouseAdapter() {
 		    	@Override
 		    	public void mouseClicked(MouseEvent e) {
@@ -802,6 +862,7 @@ public class Main {
 			JLabel nomePlaceHolder = new JLabel("");
 			nomePlaceHolder.setFont(new Font("Tahoma", Font.BOLD, 14));
 			card.add(nomePlaceHolder, "8, 4");
+		
 			
 			JLabel indirizzoCentro = new JLabel("Indirizzo");
 			indirizzoCentro.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -815,6 +876,9 @@ public class Main {
 			wrapper.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 			wrapper.add(card, BorderLayout.PAGE_START);
 			
+			 Border border = BorderFactory.createLineBorder(Color.BLACK,2);
+
+		        card.setBorder(border);
 			
 			return wrapper;
 		}
@@ -841,7 +905,7 @@ public class Main {
 					FormSpecs.RELATED_GAP_ROWSPEC,
 					FormSpecs.DEFAULT_ROWSPEC,}));
 			
-			JLabel nomeArea = new JLabel("Nome Area");
+			JLabel nomeArea = new JLabel("Nome Area :");
 			nomeArea.setFont(new Font("Tahoma", Font.BOLD, 15));
 			card.add(nomeArea, "2, 2, fill, center");
 			
@@ -849,7 +913,9 @@ public class Main {
 			placeHolderArea.setFont(new Font("Tahoma", Font.BOLD, 14));
 			card.add(placeHolderArea, "4, 2, fill, center");
 			
-			JLabel stato = new JLabel("Stato");
+	
+			
+			JLabel stato = new JLabel("Stato :");
 			stato.setFont(new Font("Tahoma", Font.BOLD, 15));
 			card.add(stato, "2, 4, fill, top");
 			
@@ -857,7 +923,9 @@ public class Main {
 			placeHolderStato.setFont(new Font("Tahoma", Font.BOLD, 14));
 			card.add(placeHolderStato, "4, 4, fill, center");
 			
-			JLabel latitude = new JLabel("Latitudine");
+	
+			
+			JLabel latitude = new JLabel("Latitudine :");
 			latitude.setFont(new Font("Tahoma", Font.BOLD, 15));
 			card.add(latitude, "2, 6, fill, top");
 			
@@ -865,7 +933,7 @@ public class Main {
 			placeHolderLat.setFont(new Font("Tahoma", Font.BOLD, 14));
 			card.add(placeHolderLat, "4, 6, fill, center");
 			
-			JLabel longitude = new JLabel("Longitudine");
+			JLabel longitude = new JLabel("Longitudine :");
 			longitude.setFont(new Font("Tahoma", Font.BOLD, 15));
 			card.add(longitude, "2, 8, left, top");
 			
@@ -876,6 +944,10 @@ public class Main {
 			wrapper.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 			wrapper.add(card, BorderLayout.PAGE_START);
 			
+			 Border border = BorderFactory.createLineBorder(Color.BLACK,2);
+
+		        card.setBorder(border);
+		        
 			
 			return wrapper;
 		}
@@ -906,33 +978,73 @@ public class Main {
 			nomeArea.setFont(new Font("Tahoma", Font.BOLD, 15));
 			card.add(nomeArea, "2, 2, fill, center");
 			
-			JLabel placeHolderArea = new JLabel("aaaaaaaaaaaaaaa");
+			JLabel placeHolderArea = new JLabel("111");
 			placeHolderArea.setFont(new Font("Tahoma", Font.BOLD, 14));
 			card.add(placeHolderArea, "4, 2, fill, center");
+					
+			JLabel vento = new JLabel("Vento");
+			vento.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(vento, "2, 4, fill, top");
 			
-			JLabel stato = new JLabel("Stato");
-			stato.setFont(new Font("Tahoma", Font.BOLD, 15));
-			card.add(stato, "2, 4, fill, top");
+			JLabel placeHolderVento = new JLabel("222");
+			placeHolderVento.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderVento, "4, 4, fill, center");
 			
-			JLabel placeHolderStato = new JLabel("bbbbbbbbbbbbb");
-			placeHolderStato.setFont(new Font("Tahoma", Font.BOLD, 14));
-			card.add(placeHolderStato, "4, 4, fill, center");
+			JLabel umidita = new JLabel("umidità");
+			umidita.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(umidita, "2, 6, fill, top");
 			
-			JLabel latitude = new JLabel("Latitudine");
-			latitude.setFont(new Font("Tahoma", Font.BOLD, 15));
-			card.add(latitude, "2, 6, fill, top");
+			JLabel placeHolderumidita = new JLabel("333");
+			placeHolderumidita.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderumidita, "4, 6, fill, center");
 			
-			JLabel placeHolderLat = new JLabel("ccccccccccccc");
-			placeHolderLat.setFont(new Font("Tahoma", Font.BOLD, 14));
-			card.add(placeHolderLat, "4, 6, fill, center");
+			JLabel pressione = new JLabel("Pressione");
+			pressione.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(pressione, "2, 8, left, top");
 			
-			JLabel longitude = new JLabel("Longitudine");
-			longitude.setFont(new Font("Tahoma", Font.BOLD, 15));
-			card.add(longitude, "2, 8, left, top");
+			JLabel placeHolderpressione = new JLabel("444");
+			placeHolderpressione.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderpressione, "4, 8, fill, center");
 			
-			JLabel placeHolderLong = new JLabel("ddddddddddddddddddd");
-			placeHolderLong.setFont(new Font("Tahoma", Font.BOLD, 14));
-			card.add(placeHolderLong, "4, 8, fill, center");
+			JLabel precipitazioni = new JLabel("Precipitazioni");
+			precipitazioni.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(precipitazioni, "2, 4, fill, top");
+			
+			JLabel placeHolderprecipitazioni = new JLabel("555");
+			placeHolderprecipitazioni.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderprecipitazioni, "4, 4, fill, center");
+			
+			JLabel temperatura = new JLabel("Temperatura");
+			temperatura.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(temperatura, "2, 4, fill, top");
+			
+			JLabel placeHoldertemperatura = new JLabel("666");
+			placeHoldertemperatura.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHoldertemperatura, "4, 4, fill, center");
+			
+			JLabel altitudineghiacciai = new JLabel("Altitudine Ghiacciai");
+			altitudineghiacciai.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(altitudineghiacciai, "2, 4, fill, top");
+			
+			JLabel placeHolderaltitudine = new JLabel("777");
+			placeHolderaltitudine.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderaltitudine, "4, 4, fill, center");
+			
+			JLabel massaghiacciai = new JLabel("Massa Ghicciai");
+			massaghiacciai.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(massaghiacciai, "2, 4, fill, top");
+			
+			JLabel placeHoldermassa = new JLabel("888");
+			placeHoldermassa.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHoldermassa, "4, 4, fill, center");
+			
+			JLabel note = new JLabel("Note");
+			note.setFont(new Font("Tahoma", Font.BOLD, 15));
+			card.add(note, "2, 4, fill, top");
+			
+			JLabel placeHolderNote = new JLabel("999");
+			placeHolderNote.setFont(new Font("Tahoma", Font.BOLD, 14));
+			card.add(placeHolderNote, "4, 4, fill, center");
 			
 			wrapper.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 			wrapper.add(card, BorderLayout.PAGE_START);
